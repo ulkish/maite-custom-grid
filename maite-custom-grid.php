@@ -73,29 +73,12 @@ function maite_demo_shortcode() {
     $loop = new WP_Query( $args );
 
     $all_products = array();
-    // $product_grid = '<div class="columns" id="maite_products">';
     while ( $loop->have_posts() ) : $loop->the_post();
         global $product;
-        // $test_image = wp_get_attachment_image_src(
-            // get_post_thumbnail_id($product->id), 'large')[0];
         
-        // $image_url = get_the_post_thumbnail_url( $product->get_id() );
-        // $title     = get_the_title();
-        // $excerpt   = get_the_excerpt();
-
-        // $a_product = array(
-        //     'image_url'  => get_the_post_thumbnail_url( $product->get_id() ),
-        //     'title'      => get_the_title(),
-        //     'price'      => $product->get_price(),
-        //     'permalink'  => get_the_permalink(),
-        //     'avg_rating' => $product->get_average_rating(),
-        //     'excerpt'    => get_the_excerpt(),
-        // );
-        
-        
-        // // For each product, append a card to the grid.
+        // Creating a column for every product.
         $a_product =
-        '<div class="card is-4">
+        '<div class="column is-4">
             <div class="card-image">
                 <figure class="image is-3by2">
                     <img src="' . get_the_post_thumbnail_url( $product->get_id() ) . '" alt="Placeholder image">
@@ -116,20 +99,23 @@ function maite_demo_shortcode() {
                 
             </div>
         </div>';
-
         array_push($all_products, $a_product);
     endwhile;
-
-
-    // $product_grid .= '</div>';
     wp_reset_query();
 
     // Gathering all products into chunks of 3 will help us display them in Bulma columns (rows),
     // in addition all future changes to individual rows will be easier to handle.
-    // $product_rows = array_chunk($all_products, 3);
+    $product_rows = array_chunk($all_products, 3);
     
+    // The final output returned from the shortcode.
     $complete_html_grid = '';
-    return print_r($all_products);
+
+    // Append every product in a row to a string, enclose them with a 'columns' class.
+    foreach ($product_rows as $row) {
+        $complete_html_grid .= '<div class="columns">' .  implode($row) . '</div>';
+    }
+
+    return $complete_html_grid;
 }
 add_shortcode( 'product_list', 'maite_demo_shortcode' );
 
@@ -142,6 +128,7 @@ function load_bulma_cdn() {
     echo '
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    
     ';
 }
 add_action( 'wp_head', 'load_bulma_cdn' );
