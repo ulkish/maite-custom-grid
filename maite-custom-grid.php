@@ -27,9 +27,10 @@
  * @package Maite Custom Grid
  */
 
-// TODO LIST:
-// Load custom css file for present and future changes. [DONE]
-// Load library used to implement list to slider behaviour on mobile use.
+// === TODO LIST ===
+// - Load custom css file for present and future changes. [DONE]
+// - Output normal grid styled with Bulma before adding the slider functionality. [IN PROGRESS]
+// - Load library used to implement list to slider behaviour on mobile use.
 
 /**
  * Enqueues our css file into WP.
@@ -62,10 +63,11 @@ function maite_inspect_styles() {
 /**
  * Shortcode for outputing a grid with WooCommerce products.
  *
- * @return $product_grid
+ * @return string $complete_html_grid
  */
-function maite_demo_shortcode() {
+function maite_custom_shortcode() {
 
+    // Getting all products with a WP Query.
     $args = array(
         'post_type'      => 'product',
         'posts_per_page' => 10,
@@ -80,7 +82,7 @@ function maite_demo_shortcode() {
         $a_product =
         '<div class="column is-4">
             <div class="card-image">
-                <figure class="image is-3by2">
+                <figure class="image ">
                     <img src="' . get_the_post_thumbnail_url( $product->get_id() ) . '" alt="Placeholder image">
                 </figure>
             </div>
@@ -90,11 +92,25 @@ function maite_demo_shortcode() {
                         <p class="title is-4">' . $product->get_title() .'</p>
                     </div>
                 </div>
-                <div>Stars: ' . $product->get_average_rating() . ' </div>
+                <div class="columns">
+                    <div class="column is-one-third">
+                        <i class="fas fa-star" style="color: yellow;"></i> ' . intval($product->get_average_rating()) . '
+                    </div>
+                    <div class="column is-two-thirds">
+                        <i class="far fa-calendar"></i> ' . 'Here there will be dates' . '
+                    </div>
+                </div>
+
                 <div class="content">
-                    ' . get_the_excerpt() . '<br>
-                    <span class"is-pulled-left is-3"><strong>' . $product->get_price() . '</strong></span>
-                    <a href="' . get_the_permalink() . '" class="button is-pulled-right is-primary is-rounded">+ Información</a>
+                    ' . get_the_excerpt() . '
+                </div>
+                <div class="columns">
+                    <div class="column is-one-third">
+                        <span class"is-half"><strong>$' . $product->get_price() . '</strong></span>
+                    </div>
+                    <div class="column is-two-thirds">
+                    <a href="' . get_the_permalink() . '" class="button is-half is-primary is-rounded">+ Información</a>
+                    </div>
                 </div>
                 
             </div>
@@ -110,28 +126,25 @@ function maite_demo_shortcode() {
     // The final output returned from the shortcode.
     $complete_html_grid = '';
 
-    // Append every product in a row to a string, enclose them with a 'columns' class.
+    // Append every product in a row to a string, enclose them within a 'columns' class.
     foreach ($product_rows as $row) {
+        // Append 3 products together to form a row.
         $complete_html_grid .= '<div class="columns">' .  implode($row) . '</div>';
     }
 
     return $complete_html_grid;
 }
-add_shortcode( 'product_list', 'maite_demo_shortcode' );
+add_shortcode( 'product_list', 'maite_custom_shortcode' );
 
 /**
- * Echoes the CDN for Bulma.css on the site header.
+ * Echoes the CDN for Bulma.css and Font Awesome 5 on the site header.
  *
  * @return void
  */
-function load_bulma_cdn() {
+function load_maite_cdns() {
     echo '
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-    
     ';
 }
-add_action( 'wp_head', 'load_bulma_cdn' );
-
-// print_r(get_post_meta(20));
-// print_r(get_post_meta(20, '_wc_average_rating', true));
+add_action( 'wp_head', 'load_maite_cdns' );

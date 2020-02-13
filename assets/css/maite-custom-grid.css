@@ -4,9 +4,15 @@
 	grid-gap: 0.5em;
 } */
 
-.card img {
+.card-image > figure > img {
 	border-radius: 8%;
 }
+
+/* .fa-star i {
+	color: yellow;
+} */
+
+
 /* 
 .card button {
     border-radius: 20px;
