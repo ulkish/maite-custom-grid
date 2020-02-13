@@ -31,10 +31,16 @@
 // Load custom css file for present and future changes. [DONE]
 // Load library used to implement list to slider behaviour on mobile use.
 
-
+/**
+ * Enqueues our css file into WP.
+ *
+ * @return void
+ */
 function maite_custom_grid_scripts() {
-	wp_enqueue_style( 'maite-customization-style', plugin_dir_url( __FILE__ ) . 'assets/css/maite-customizations.css' );
-	// wp_enqueue_script( 'charts-js', 'https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js' );
+    wp_enqueue_style( 'maite-customization-style',
+        plugin_dir_url( __FILE__ )
+        . 'assets/css/maite-customizations.css'
+    );
 }
 add_action( 'wp_enqueue_scripts', 'maite_custom_grid_scripts' );
 
@@ -66,27 +72,33 @@ function maite_demo_shortcode() {
     );
     $loop = new WP_Query( $args );
 
-    $product_grid = '<div class="columns" id="maite_products">';
+    $all_products = array();
+    // $product_grid = '<div class="columns" id="maite_products">';
     while ( $loop->have_posts() ) : $loop->the_post();
         global $product;
         // $test_image = wp_get_attachment_image_src(
             // get_post_thumbnail_id($product->id), 'large')[0];
         
-        $image_url = get_the_post_thumbnail_url($product->id);
-        $title     = get_the_title();
-        $excerpt   = get_the_excerpt();
+        // $image_url = get_the_post_thumbnail_url( $product->get_id() );
+        // $title     = get_the_title();
+        // $excerpt   = get_the_excerpt();
 
-        $a_product = array();
-
-        array_push($a_product, array()
-        );
+        // $a_product = array(
+        //     'image_url'  => get_the_post_thumbnail_url( $product->get_id() ),
+        //     'title'      => get_the_title(),
+        //     'price'      => $product->get_price(),
+        //     'permalink'  => get_the_permalink(),
+        //     'avg_rating' => $product->get_average_rating(),
+        //     'excerpt'    => get_the_excerpt(),
+        // );
         
-        // For each product, append a card to the grid.
-        $product_grid .=
+        
+        // // For each product, append a card to the grid.
+        $a_product =
         '<div class="card is-4">
             <div class="card-image">
                 <figure class="image is-3by2">
-                    <img src="' . $image_url . '" alt="Placeholder image">
+                    <img src="' . get_the_post_thumbnail_url( $product->get_id() ) . '" alt="Placeholder image">
                 </figure>
             </div>
             <div class="card-content">
@@ -97,21 +109,27 @@ function maite_demo_shortcode() {
                 </div>
                 <div>Stars: ' . $product->get_average_rating() . ' </div>
                 <div class="content">
-                    ' . $product->get_description() . '<br>
+                    ' . get_the_excerpt() . '<br>
                     <span class"is-pulled-left is-3"><strong>' . $product->get_price() . '</strong></span>
                     <a href="' . get_the_permalink() . '" class="button is-pulled-right is-primary is-rounded">+ Información</a>
-
                 </div>
                 
             </div>
         </div>';
+
+        array_push($all_products, $a_product);
     endwhile;
 
 
-    $product_grid .= '</div>';
+    // $product_grid .= '</div>';
     wp_reset_query();
 
-    return $product_grid;
+    // Gathering all products into chunks of 3 will help us display them in Bulma columns (rows),
+    // in addition all future changes to individual rows will be easier to handle.
+    // $product_rows = array_chunk($all_products, 3);
+    
+    $complete_html_grid = '';
+    return print_r($all_products);
 }
 add_shortcode( 'product_list', 'maite_demo_shortcode' );
 
