@@ -112,24 +112,61 @@ function maite_custom_shortcode() {
                     <a href="' . get_the_permalink() . '" class="button is-half is-primary is-rounded">+ Información</a>
                     </div>
                 </div>
-                
             </div>
         </div>';
         array_push($all_products, $a_product);
     endwhile;
     wp_reset_query();
 
-    // // Getting all LearnDash products.
-    // $args = array(
-    //     'post_type'      => 'sfwd-lessons',
-    //     'posts_per_page' => 10,
-    // );
-    // $loop = new WP_Query( $args );
+    // Getting all LearnDash products.
+    $args = array(
+        'post_type'      => 'sfwd-courses',
+        'posts_per_page' => 10,
+    );
+    $loop = new WP_Query( $args );
 
-    // $learndash_products = array();
-    // while ( $loop->have_posts() ) : $loop->the_post();
-    //     array_push($learndash_products, get_the_post());
-    // endwhile;
+    while ( $loop->have_posts() ) : $loop->the_post();
+        global $post;
+
+        // Creating a column for every product.
+        $a_product =
+        '<div class="column is-4">
+            <div class="card-image">
+                <figure class="image ">
+                    <img src="' . get_the_post_thumbnail_url( $post->ID ) . '" alt="Placeholder image">
+                </figure>
+            </div>
+            <div class="card-content">
+                <div class="media">
+                    <div class="media-content">
+                        <p class="title is-4">' . get_the_title() .'</p>
+                    </div>
+                </div>
+                <div class="columns">
+                    <div class="column is-one-third">
+                        <i class="fas fa-star" style="color: yellow;"></i> ' . 'X' . '
+                    </div>
+                    <div class="column is-two-thirds">
+                        <i class="far fa-calendar"></i> ' . 'Here there will be dates' . '
+                    </div>
+                </div>
+
+                <div class="content">
+                    ' . get_the_excerpt() . '
+                </div>
+                <div class="columns">
+                    <div class="column is-one-third">
+                        <span class"is-half"><strong>$' . '9999' . '</strong></span>
+                    </div>
+                    <div class="column is-two-thirds">
+                    <a href="' . get_the_permalink() . '" class="button is-half is-primary is-rounded">+ Información</a>
+                    </div>
+                </div>
+            </div>
+        </div>';
+
+    array_push($all_products, $a_product);
+    endwhile;
     // return print_r($learndash_products);
 
 
