@@ -61,13 +61,13 @@ function maite_inspect_styles() {
 // add_action( 'wp_print_styles', 'maite_inspect_styles' );
 
 /**
- * Shortcode for outputing a grid with WooCommerce products.
+ * Shortcode for outputing a grid with WooCommerce and LearnDash products.
  *
  * @return string $complete_html_grid
  */
 function maite_custom_shortcode() {
 
-    // Getting all products with a WP Query.
+    // Getting all WooCommerce products.
     $args = array(
         'post_type'      => 'product',
         'posts_per_page' => 10,
@@ -119,6 +119,20 @@ function maite_custom_shortcode() {
     endwhile;
     wp_reset_query();
 
+    // // Getting all LearnDash products.
+    // $args = array(
+    //     'post_type'      => 'sfwd-lessons',
+    //     'posts_per_page' => 10,
+    // );
+    // $loop = new WP_Query( $args );
+
+    // $learndash_products = array();
+    // while ( $loop->have_posts() ) : $loop->the_post();
+    //     array_push($learndash_products, get_the_post());
+    // endwhile;
+    // return print_r($learndash_products);
+
+
     // Gathering all products into chunks of 3 will help us display them in Bulma columns (rows),
     // in addition all future changes to individual rows will be easier to handle.
     $product_rows = array_chunk($all_products, 3);
@@ -126,9 +140,9 @@ function maite_custom_shortcode() {
     // The final output returned from the shortcode.
     $complete_html_grid = '';
 
-    // Append every product in a row to a string, enclose them within a 'columns' class.
+    // Append 3 products together to form a row.
     foreach ($product_rows as $row) {
-        // Append 3 products together to form a row.
+        // Append every product in a row to a string, enclose them within a 'columns' class.
         $complete_html_grid .= '<div class="columns">' .  implode($row) . '</div>';
     }
 
